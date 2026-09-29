@@ -1,0 +1,29 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore
+        run: dotnet restore .\KeyStats.slnx
+
+      - name: Build
+        run: dotnet build .\KeyStats.slnx -c Release --no-restore
+
+      - name: Run regression tests
+        run: dotnet run --project .\tests\KeyStats.Core.Tests -c Release --no-build
+

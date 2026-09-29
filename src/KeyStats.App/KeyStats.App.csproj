@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <AssemblyName>KeyStats</AssemblyName>
+    <RootNamespace>KeyStats.App</RootNamespace>
+    <Version>1.0.0</Version>
+    <FileVersion>1.0.0.0</FileVersion>
+    <InformationalVersion>1.0.0</InformationalVersion>
+    <ApplicationIcon>Assets\KeyStats.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.WindowsDesktop.App.WindowsForms" />
+    <ProjectReference Include="..\KeyStats.Core\KeyStats.Core.csproj" />
+    <ProjectReference Include="..\KeyStats.Storage\KeyStats.Storage.csproj" />
+    <Resource Include="Assets\KeyStats.ico" />
+  </ItemGroup>
+</Project>

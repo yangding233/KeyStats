@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="src/KeyStats.Core/KeyStats.Core.csproj" />
+  <Project Path="src/KeyStats.Storage/KeyStats.Storage.csproj" />
+  <Project Path="src/KeyStats.App/KeyStats.App.csproj" />
+  <Project Path="tests/KeyStats.Core.Tests/KeyStats.Core.Tests.csproj" />
+</Solution>
