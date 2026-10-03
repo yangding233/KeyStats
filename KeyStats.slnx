@@ -3,4 +3,5 @@
   <Project Path="src/KeyStats.Storage/KeyStats.Storage.csproj" />
   <Project Path="src/KeyStats.App/KeyStats.App.csproj" />
   <Project Path="tests/KeyStats.Core.Tests/KeyStats.Core.Tests.csproj" />
+  <Project Path="tests/KeyStats.App.Tests/KeyStats.App.Tests.csproj" />
 </Solution>

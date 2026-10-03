@@ -5,15 +5,16 @@
     <UseWPF>true</UseWPF>
     <AssemblyName>KeyStats</AssemblyName>
     <RootNamespace>KeyStats.App</RootNamespace>
-    <Version>1.0.0</Version>
-    <FileVersion>1.0.0.0</FileVersion>
-    <InformationalVersion>1.0.0</InformationalVersion>
+    <Version>1.0.1</Version>
+    <FileVersion>1.0.1.0</FileVersion>
+    <InformationalVersion>1.0.1</InformationalVersion>
     <ApplicationIcon>Assets\KeyStats.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="KeyStats.App.Tests" />
     <FrameworkReference Include="Microsoft.WindowsDesktop.App.WindowsForms" />
     <ProjectReference Include="..\KeyStats.Core\KeyStats.Core.csproj" />
     <ProjectReference Include="..\KeyStats.Storage\KeyStats.Storage.csproj" />

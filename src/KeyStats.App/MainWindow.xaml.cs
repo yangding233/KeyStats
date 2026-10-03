@@ -404,20 +404,56 @@ public partial class MainWindow : Window
 
     private void InitializeStartupSetting()
     {
-        _startupSettingChanging = true;
         try
         {
-            StartupCheckBox.IsChecked = _startupRegistration.IsEnabledForCurrentExecutable();
+            var snapshot = _startupRegistration.GetSnapshot();
+            RefreshStartupUi();
+            if (snapshot.ReadError is { Length: > 0 } readError)
+            {
+                StartupCheckBox.ToolTip = $"读取启动项失败：{readError}";
+            }
         }
         catch (Exception exception)
         {
+            _startupSettingChanging = true;
             StartupCheckBox.IsChecked = false;
+            _startupSettingChanging = false;
             StartupCheckBox.ToolTip = $"读取启动项失败：{exception.Message}";
+        }
+    }
+
+    /// <summary>按当前实际状态刷新自启动相关的界面元素。</summary>
+    private void RefreshStartupUi(string? hint = null)
+    {
+        var snapshot = _startupRegistration.GetSnapshot();
+
+        _startupSettingChanging = true;
+        try
+        {
+            StartupCheckBox.IsChecked = snapshot.IsEnabled;
         }
         finally
         {
             _startupSettingChanging = false;
         }
+
+        StartupCheckBox.ToolTip = snapshot switch
+        {
+            { UsesRegistry: true } => "已启用：登录后从当前绿色版路径静默启动（当前用户启动项）。",
+            { UsesStartupFolder: true } => "已启用：通过「启动」文件夹快捷方式静默启动（注册表启动项被系统拒绝）。",
+            _ => "未启用开机自启动。",
+        };
+
+        StartupRepairButton.Visibility = snapshot.StaleRegistryCommand is null
+            ? Visibility.Collapsed
+            : Visibility.Visible;
+        StartupRepairButton.ToolTip = snapshot.StaleRegistryCommand is { } stale
+            ? $"检测到指向旧位置的自启动项：\n{stale}\n\n点击可更新为当前位置。"
+            : null;
+
+        StartupHintText.Text = hint ?? (snapshot.StaleRegistryCommand is null
+            ? string.Empty
+            : "检测到指向旧位置的自启动项，可点击“更新自启动位置”修复。");
     }
 
     private void StartupCheckBox_Changed(object sender, RoutedEventArgs eventArgs)
@@ -430,10 +466,11 @@ public partial class MainWindow : Window
         var requestedState = StartupCheckBox.IsChecked == true;
         try
         {
-            _startupRegistration.SetEnabled(requestedState);
-            StartupCheckBox.ToolTip = requestedState
-                ? "已为当前 Windows 用户启用；程序将从当前绿色版路径静默启动。"
-                : "未启用开机自启动。";
+            var mode = _startupRegistration.SetEnabled(requestedState);
+            var hint = mode == StartupRegistrationMode.StartupFolder
+                ? $"注册表启动项被系统拒绝，已改用「启动」文件夹快捷方式：{_startupRegistration.StartupFolderPath}"
+                : null;
+            RefreshStartupUi(hint);
         }
         catch (Exception exception)
         {
@@ -442,11 +479,39 @@ public partial class MainWindow : Window
             _startupSettingChanging = false;
             MessageBox.Show(
                 this,
-                $"无法修改 Windows 启动项。\n\n{exception.Message}",
+                $"无法修改开机自启动。\n\n{exception.Message}\n\n" +
+                "常见原因：安全软件或组策略禁止写入启动项。\n" +
+                $"你也可以手动把 KeyStats 的快捷方式放进「启动」文件夹：\n{_startupRegistration.StartupFolderPath}",
                 "KeyStats",
                 MessageBoxButton.OK,
-                MessageBoxImage.Error);
+                MessageBoxImage.Warning);
+            RefreshStartupUi();
         }
+    }
+
+    private void StartupRepairButton_Click(object sender, RoutedEventArgs eventArgs)
+    {
+        if (_startupRegistration.TryRepairRegistryEntry())
+        {
+            RefreshStartupUi("已把自启动项更新为当前位置。");
+            MessageBox.Show(
+                this,
+                "已把开机自启动项更新为当前位置。",
+                "KeyStats",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+            return;
+        }
+
+        var reason = _startupRegistration.RegistryFailureReason ?? "未知原因";
+        MessageBox.Show(
+            this,
+            $"更新自启动项失败：\n\n{reason}\n\n" +
+            $"可手动把 KeyStats 的快捷方式放进「启动」文件夹：\n{_startupRegistration.StartupFolderPath}",
+            "KeyStats",
+            MessageBoxButton.OK,
+            MessageBoxImage.Warning);
+        RefreshStartupUi();
     }
 
     private async void ExportButton_Click(object sender, RoutedEventArgs eventArgs)

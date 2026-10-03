@@ -27,3 +27,6 @@ jobs:
       - name: Run regression tests
         run: dotnet run --project .\tests\KeyStats.Core.Tests -c Release --no-build
 
+      - name: Run app-level tests
+        run: .\tests\KeyStats.App.Tests\bin\Release\net10.0-windows\win-x64\KeyStats.App.Tests.exe
+

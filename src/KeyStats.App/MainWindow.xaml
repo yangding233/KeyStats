@@ -24,8 +24,11 @@
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                     <CheckBox x:Name="StartupCheckBox" Content="登录 Windows 后自动启动" Focusable="False"
-                              VerticalAlignment="Center" Margin="0,0,16,0"
+                              VerticalAlignment="Center" Margin="0,0,8,0"
                               Checked="StartupCheckBox_Changed" Unchecked="StartupCheckBox_Changed" />
+                    <Button x:Name="StartupRepairButton" Content="更新自启动位置" Style="{StaticResource SecondaryButtonStyle}"
+                            Focusable="False" Padding="10,5" FontWeight="Normal" Margin="0,0,16,0"
+                            Visibility="Collapsed" Click="StartupRepairButton_Click" />
                     <Border x:Name="StatusBadge" Background="#E9F7EF" CornerRadius="14" Padding="12,6">
                         <StackPanel Orientation="Horizontal">
                             <Ellipse x:Name="StatusDot" Width="8" Height="8" Fill="#38A85A" Margin="0,0,7,0" />
@@ -125,6 +128,7 @@
                         <TextBlock x:Name="LastInputText" Text="等待输入…" Foreground="{StaticResource SecondaryTextBrush}" TextTrimming="CharacterEllipsis" />
                         <TextBlock x:Name="UnknownInputText" Text="未识别输入：0" Foreground="#A45A18" Margin="0,3,0,0" />
                         <TextBlock x:Name="CollectionHealthText" Text="采集健康度：正在初始化…" Foreground="#526474" Margin="0,3,0,0" TextWrapping="Wrap" />
+                        <TextBlock x:Name="StartupHintText" Foreground="#A45A18" Margin="0,3,0,0" TextWrapping="Wrap" />
                         <TextBlock x:Name="StorageStatusText" Text="本地数据：正在初始化…" Foreground="#526474" Margin="0,5,0,0" TextWrapping="Wrap" />
                     </StackPanel>
                 </Grid>
