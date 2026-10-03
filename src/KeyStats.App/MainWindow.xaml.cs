@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Windows;
@@ -477,14 +478,7 @@ public partial class MainWindow : Window
             _startupSettingChanging = true;
             StartupCheckBox.IsChecked = !requestedState;
             _startupSettingChanging = false;
-            MessageBox.Show(
-                this,
-                $"无法修改开机自启动。\n\n{exception.Message}\n\n" +
-                "常见原因：安全软件或组策略禁止写入启动项。\n" +
-                $"你也可以手动把 KeyStats 的快捷方式放进「启动」文件夹：\n{_startupRegistration.StartupFolderPath}",
-                "KeyStats",
-                MessageBoxButton.OK,
-                MessageBoxImage.Warning);
+            ShowStartupFailureHelp(exception.Message);
             RefreshStartupUi();
         }
     }
@@ -503,15 +497,51 @@ public partial class MainWindow : Window
             return;
         }
 
-        var reason = _startupRegistration.RegistryFailureReason ?? "未知原因";
-        MessageBox.Show(
-            this,
-            $"更新自启动项失败：\n\n{reason}\n\n" +
-            $"可手动把 KeyStats 的快捷方式放进「启动」文件夹：\n{_startupRegistration.StartupFolderPath}",
-            "KeyStats",
-            MessageBoxButton.OK,
-            MessageBoxImage.Warning);
+        ShowStartupFailureHelp(_startupRegistration.RegistryFailureReason ?? "未知原因");
         RefreshStartupUi();
+    }
+
+    /// <summary>自启动写入失败时的引导：说明原因，并提供打开「启动」文件夹的入口。</summary>
+    private void ShowStartupFailureHelp(string reason)
+    {
+        var startupFolder = _startupRegistration.StartupFolderPath;
+        var result = MessageBox.Show(
+            this,
+            $"无法修改开机自启动。\n\n{reason}\n\n" +
+            "常见原因：火绒、电脑管家等安全软件，或组策略，禁止未签名的程序修改启动项。\n" +
+            "可以先在这些安全软件里放行 KeyStats，或手动添加：把 KeyStats 的快捷方式放进「启动」文件夹。\n\n" +
+            $"「启动」文件夹：\n{startupFolder}\n\n" +
+            "现在打开这个文件夹吗？",
+            "KeyStats",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Warning,
+            MessageBoxResult.Yes);
+        if (result == MessageBoxResult.Yes)
+        {
+            OpenStartupFolder();
+        }
+    }
+
+    private void OpenStartupFolder()
+    {
+        try
+        {
+            Process.Start(new ProcessStartInfo("explorer.exe", "shell:startup") { UseShellExecute = true });
+        }
+        catch (Exception exception)
+        {
+            MessageBox.Show(
+                this,
+                $"无法打开「启动」文件夹：{exception.Message}",
+                "KeyStats",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+        }
+    }
+
+    private async void ExitButton_Click(object sender, RoutedEventArgs eventArgs)
+    {
+        await ExitApplicationAsync(confirm: true);
     }
 
     private async void ExportButton_Click(object sender, RoutedEventArgs eventArgs)

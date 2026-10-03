@@ -116,6 +116,10 @@
                         <Button Content="清零本次显示" Style="{StaticResource SecondaryButtonStyle}" Focusable="False" Padding="14,7" Margin="7,0,0,0" Click="ClearButton_Click" />
                         <Button x:Name="SaveNowButton" Content="立即保存" Style="{StaticResource SecondaryButtonStyle}" Focusable="False" Padding="14,7" IsEnabled="False" Margin="7,0,0,0" Click="SaveNowButton_Click" />
                         <Button x:Name="ExportButton" Content="导出 CSV" Style="{StaticResource SecondaryButtonStyle}" Focusable="False" Padding="14,7" IsEnabled="False" Margin="7,0,0,0" Click="ExportButton_Click" />
+                        <Button x:Name="ExitButton" Content="退出 KeyStats" Style="{StaticResource SecondaryButtonStyle}" Focusable="False" Padding="14,7" Margin="7,0,0,0" Click="ExitButton_Click" />
+                        <TextBlock Text="关闭窗口后仍在托盘运行；若托盘看不到图标，请点任务栏的 ^ 展开"
+                                   VerticalAlignment="Center" Margin="10,0,0,0" FontSize="11"
+                                   Foreground="{StaticResource SecondaryTextBrush}" />
                     </WrapPanel>
                 </Grid>
             </Border>

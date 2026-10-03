@@ -5,9 +5,9 @@
     <UseWPF>true</UseWPF>
     <AssemblyName>KeyStats</AssemblyName>
     <RootNamespace>KeyStats.App</RootNamespace>
-    <Version>1.0.1</Version>
-    <FileVersion>1.0.1.0</FileVersion>
-    <InformationalVersion>1.0.1</InformationalVersion>
+    <Version>1.0.2</Version>
+    <FileVersion>1.0.2.0</FileVersion>
+    <InformationalVersion>1.0.2</InformationalVersion>
     <ApplicationIcon>Assets\KeyStats.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
